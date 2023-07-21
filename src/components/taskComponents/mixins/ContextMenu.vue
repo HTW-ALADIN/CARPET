@@ -38,11 +38,9 @@ export default {
     };
 
     const methodWrapper = (method: Function) => {
-      const usedMethods = getProperty(`nodes__${currentNode}__components__${props.componentId}__contextMenu__usedMethods`);
-      console.log(usedMethods);
       setProperty({
         path: `nodes__${currentNode}__components__${props.componentId}__contextMenu__usedMethods`,
-        value: [...usedMethods, method.name]
+        value: method.name
       });
 
       method();
