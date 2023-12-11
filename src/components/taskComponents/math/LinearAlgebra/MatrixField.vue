@@ -97,12 +97,13 @@ export default {
       const rowIndex = <number>props.rowIndex;
       const columnIndex = <number>props.columnIndex;
 
-      const userData = getProperty(`${componentPath}__userData`).value;
+        const userData = getProperty(`${componentPath}__userData`);
 
-      const validationMatrix: Array<Array<boolean | null>> = await store.dispatch("fetchTaskData", {
-        userData,
-        endpoint: `${currentTask.value}/${validationConfig.instruction}`
-      });
+        const validationMatrix: Array<Array<boolean | null>> = await store.dispatch("fetchTaskData", {
+ 
+              endpoint: `${currentTask.value}/${validationConfig.instruction}`,
+              payload: { userData, instruction: validationConfig.instruction, type: currentTask.value, task: currentTask.value }
+        });
 
       const isCorrectValue = <boolean>validationMatrix[rowIndex][columnIndex];
       const isCorrect = isCorrectValue;
