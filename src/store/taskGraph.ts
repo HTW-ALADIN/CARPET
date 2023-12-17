@@ -133,8 +133,10 @@ const actions = {
   resetStore: async ({ commit }) => {
     commit("RESET");
   },
+
   fetchTaskData: async ({ commit, dispatch }, payloadObject: { [key: string]: any }) => {
     // await dispatch("fetchTaskGraph");
+    console.log(payloadObject);
     const { endpoint, payload } = payloadObject;
     // TODO extract language to seperate user module
     const result = await axios.post(`/api/${endpoint}`, { ...payload, language: "de" });
