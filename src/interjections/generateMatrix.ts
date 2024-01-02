@@ -20,12 +20,7 @@ export const generateMatrix = (
   // -1 due to the baseMatrix already existing
   const n = getProperty(dependencies.n) - 1;
 
-  const createDistanceMatrix = (
-    baseMatrix: IComponent,
-    currentNodeId: number,
-    MatrixId: number,
-    n: number,
-  ) => {
+  const createDistanceMatrix = (baseMatrix: IComponent, currentNodeId: number, MatrixId: number, n: number) => {
     const clonedMatrix = JSON.parse(JSON.stringify(baseMatrix));
 
     clonedMatrix.dependencies.Matrix.data = `taskData__DigraphIteration${n}`;
@@ -42,19 +37,15 @@ export const generateMatrix = (
         impact: 1
       }
     };
-    clonedMatrix.component.initialize.solution.paths = [
-      `taskData__DigraphIteration${n}`,
-    ];
+    clonedMatrix.component.initialize.solution.paths = [`taskData__DigraphIteration${n}`];
 
     // uneven matrices are required to be filled by the user
     // thus reset validationData
     clonedMatrix.component.initialize.validation.paths = [`taskData__DigraphIteration${n}`];
-    
 
     return clonedMatrix;
   };
 
-  
   const adaptLayouts = (layouts: ILayouts, componentId: number, verticalFactor: number) => {
     const newlayouts = Object.entries(layouts).reduce((newLayouts, [layoutSize, layout]) => {
       const baseMatrixCoordinates = layout.filter((component: any) => component.i === baseMatrixId)[0];
@@ -71,28 +62,27 @@ export const generateMatrix = (
       return newLayouts;
     }, {} as ILayouts);
 
+    console.log(layouts, newlayouts);
+
     return newlayouts;
   };
-
 
   let layouts: ILayouts = taskNode.layouts;
 
   const MatrixId = baseMatrixId;
   let currentMatrixId = MatrixId;
 
-
   for (let i = 0; i < n; i++) {
-
     // create i'th multiplication matrix
     nodeComponents[currentMatrixId] = JSON.parse(JSON.stringify(baseMatrix));
-    layouts = adaptLayouts(layouts, i, 1);
     currentMatrixId = currentMatrixId + 1;
 
     // create i'th multiplied matrix
     nodeComponents[currentMatrixId] = createDistanceMatrix(baseMatrix, currentNodeId, currentMatrixId, i);
     layouts = adaptLayouts(layouts, currentMatrixId, 1);
-
   }
+
+  console.log(layouts[2]);
 
   // nodeComponents[secondaryRequirementsVectorId] = setSecondaryNeedsVectorSolutionCalculationPaths(
   //   secondaryNeedsVector,
