@@ -115,6 +115,7 @@ interface INodes {
 interface IState {
   isLoading: boolean;
   previousNode: number;
+  taskMode: "strictPractice" | "practice" | "exam";
   rootNode: number;
   currentTask: string;
   layoutSize: string;

@@ -1,11 +1,11 @@
 <template>
   <div class="dijkstraGraph">
-    <DOTGraph :componentID="componentID" :storeObject="storeObject" />
+    <DOTGraph :componentID="componentID" :storeObject="storeObject" :componentPath="componentPath" />
   </div>
 </template>
 
 <script lang="ts">
-import { onMounted, computed } from "vue";
+import { onMounted, computed, unref } from "vue";
 import DOTGraph from "@/components/taskComponents/DOTGraph/DOTGraph.vue";
 
 export default {
@@ -15,8 +15,9 @@ export default {
     storeObject: Object
   },
   setup(props) {
-    const { getProperty, setProperty } = props.storeObject;
+    const { getProperty, setProperty } = unref(props).storeObject;
     const currentNode = computed(() => getProperty("currentNode"));
+    const componentPath = `nodes__${currentNode.value}__components__${props.componentID}__nestedComponents__DOTGraph`;
     const path = `nodes__${currentNode.value}__components__${props.componentID}`;
 
     const dependencies = getProperty(`${path}__dependencies`);
@@ -80,7 +81,7 @@ export default {
       });
     };
 
-    return {};
+    return { componentPath };
   }
 };
 </script>

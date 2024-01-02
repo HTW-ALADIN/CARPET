@@ -20,10 +20,18 @@ const storeMap: StoreMap = {
   [StoreMapName.configurationStore]: configurationStore
 };
 
+export interface StoreGetter {
+  (path: string): any;
+}
+
+export interface StoreSetter {
+  (payload: { path: string; value: any; metadata?: { descriptor: string } }): null;
+}
+
 export interface IStore {
   store: Store<IState>;
-  getProperty: Function;
-  setProperty: Function;
+  getProperty: StoreGetter;
+  setProperty: StoreSetter;
 }
 
 // bundle the different stores with the same utility functions to easily exchange them when injecting into the Canvas component

@@ -67,6 +67,7 @@ export const taskStore = defineStore("taskGraph", {
       Object.entries(JSON.parse(result.data)).forEach(async ([key, value]) => {
         await this.setPropertyFromPath({ path: `taskData__${key}`, value: value });
       });
+      return result;
     },
     async fetchTaskGraph(payload: { task: string }) {
       try {
@@ -94,7 +95,7 @@ export const taskStore = defineStore("taskGraph", {
         await this.toggleLoading();
       }
     },
-    async setPropertyFromPath(payload: { path: string; value: any }) {
+    async setPropertyFromPath(payload: { path: string; value: any; metadata?: { descriptor: string } }) {
       const { path, value } = payload;
       if (typeof path !== "string") {
         throw new Error(`Path is not a string: ${path}`);

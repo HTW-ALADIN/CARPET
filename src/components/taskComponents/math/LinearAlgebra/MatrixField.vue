@@ -5,7 +5,7 @@
     :readonly="isReadOnly"
     :disabled="isReadOnly"
     @keyup="updateField"
-    type="number"
+    :type="inputType"
     :value="element"
   />
 </template>
@@ -20,7 +20,8 @@ export default {
     isReadOnly: Boolean,
     element: Number,
     storeObject: Object,
-    componentID: Number
+    componentID: Number,
+    inputType: String
   },
   setup(props) {
     const { store, getProperty, setProperty } = props.storeObject;
@@ -29,6 +30,9 @@ export default {
     const taskMode = computed(() => store.state.taskMode);
     const userData = computed(() => loadData(`${componentPath}__userData`));
     const solutionData = computed(() => loadData(`${componentPath}__solutionData`));
+    const currentTask = computed(() => getProperty("currentTask"));
+
+    const validationConfig = getProperty(`nodes__${currentNode.value}__components__${props.componentID}__validationConfig`);
 
     const loadData = (path: string) => {
       const data = getProperty(path);
@@ -42,7 +46,7 @@ export default {
       const element = <HTMLInputElement>event.target;
       const { index } = <{ index: string }>element.dataset;
       const [column, row] = index.split(",");
-      let value = element.value === "" ? null : parseInt(element.value);
+      let value = element.value === "" ? null : props.inputType === "number" ? parseInt(element.value) : element.value;
       setProperty({ path: `${componentPath}__userData__${column}__${row}`, value });
     };
 
@@ -88,10 +92,39 @@ export default {
       return { isCorrect, isSet };
     };
 
+    // TODO!!: delete in proper MatrixField component
+    const externalValidation = async () => {
+      const rowIndex = <number>props.rowIndex;
+      const columnIndex = <number>props.columnIndex;
+
+      const userData = getProperty(`${componentPath}__userData`).value;
+
+      const validationMatrix: Array<Array<boolean | null>> = await store.dispatch("fetchTaskData", {
+        endpoint: `${currentTask.value}/${validationConfig.instruction}`,
+        payload: { userData, instruction: validationConfig.instruction, type: currentTask.value, task: currentTask.value }
+      });
+
+      const isCorrectValue = <boolean>validationMatrix[rowIndex][columnIndex];
+      const isCorrect = isCorrectValue;
+      const isSet = isCorrectValue !== null ? true : false;
+
+      // TODO: make global/constant enum variable in centralised place
+      if (taskMode.value === "practice") setVisualCorrectness(isCorrect, isSet, rowIndex, columnIndex);
+
+      setProperty({
+        path: `${componentPath}__validationData`,
+        value: validationMatrix
+      });
+    };
+
     watch(
       () => props.element,
-      () => {
-        validateMatrixField(<number>props.rowIndex, <number>props.columnIndex);
+      async () => {
+        if (validationConfig) {
+          await externalValidation();
+        } else {
+          validateMatrixField(<number>props.rowIndex, <number>props.columnIndex);
+        }
       }
     );
 

@@ -1,7 +1,7 @@
 import type { IStore } from "@/helpers/TaskGraphUtility";
 import { ensurePathExists } from "@/store/taskGraph";
 import { unref, computed, ref } from "vue";
-import type { Ref, ComputedRef, StyleValue, UnwrapRef } from "vue";
+import type { Ref, ComputedRef, StyleValue } from "vue";
 
 export type TaskGraphPath = string;
 

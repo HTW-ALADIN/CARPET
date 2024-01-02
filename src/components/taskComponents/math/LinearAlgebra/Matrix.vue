@@ -4,12 +4,12 @@
       <tr v-if="columnLabel && columnLabel.length">
         <p class="placeholder">&nbsp;</p>
         <th v-for="(label, i) in columnLabel" :key="i">
-          <p class="matrix_label">{{ label }}</p>
+          <p class="matrix_label column_label">{{ label }}</p>
         </th>
       </tr>
       <tr v-for="(row, i) in userData" :key="i">
         <th v-if="rowLabel && rowLabel.length">
-          <p class="matrix_label">{{ rowLabel[i] }}</p>
+          <p class="matrix_label row_label">{{ rowLabel[i] }}</p>
         </th>
         <td class="matrix_element" v-for="(element, j) in userData[i]" :key="j">
           <MatrixField
@@ -19,6 +19,7 @@
             :componentID="id"
             :isReadOnly="isReadOnly"
             :element="element"
+            :inputType="inputType ?? 'number'"
           />
         </td>
       </tr>
@@ -30,10 +31,10 @@
 import { onMounted, computed, watch } from "vue";
 import { Matrix } from "@/helpers/LinearAlgebra";
 import MatrixField from "@/components/taskComponents/math/LinearAlgebra/MatrixField.vue";
-import type { IMatrixComponent, IMatrixInstruction } from "@/interfaces/componentInterfaces/MatrixInterface";
+import type { IMatrixInstruction } from "@/interfaces/componentInterfaces/MatrixInterface";
 import ContextMenu from "@/components/taskComponents/mixins/ContextMenu.vue";
-import type {IMethodsDefinition} from "@/interfaces/TaskGraphInterface";
-import {getSelectedMethods} from "@/helpers/getSelectedMethods";
+import type { IMethodsDefinition } from "@/interfaces/TaskGraphInterface";
+import { getSelectedMethods } from "@/helpers/getSelectedMethods";
 
 export default {
   props: { componentID: Number, storeObject: Object },
@@ -44,6 +45,7 @@ export default {
   setup(props) {
     const { store, getProperty, setProperty } = props.storeObject;
     const currentNode = computed(() => store.state.currentNode);
+    const currentTask = computed(() => getProperty("currentTask"));
     const componentPath = `nodes__${currentNode.value}__components__${props.componentID}__component`;
 
     const dependencyPaths = getProperty(`nodes__${currentNode.value}__components__${props.componentID}__dependencies`);
@@ -53,8 +55,23 @@ export default {
 
     const isReadOnly = getProperty(`${componentPath}__readOnly`);
     const instructions = getProperty(`${componentPath}__initialize`);
+    const inputType = getProperty(`${componentPath}__inputType`);
     const rowLabelPath = getProperty(`${componentPath}__rowLabel`);
     const columnLabelPath = getProperty(`${componentPath}__columnLabel`);
+    // TODO set interface in proper component
+    /* interface MatrixValidationConfig {
+      instruction: string;
+      parameters: {
+        [key: string]: string; (JSONPath)
+      };
+      correctOn: ValidityMatrix; (Matrix that contains validity of each field - or null)
+      validOn: ValidityMatrix; (Matrix that contains validity of each field - or null)
+      apiMethod?: string; Should only allow post
+      payLoad?: "Matrix" | "Field";
+    }
+    interface ValidityMatrix extends Array<Array<boolean | null>>;
+    */
+    const validationConfig = getProperty(`nodes__${currentNode.value}__components__${props.componentID}__validationConfig`);
     const rowLabel = computed(() => {
       if (rowLabelPath) return getProperty(rowLabelPath);
       else return [];
@@ -174,6 +191,35 @@ export default {
       return validity;
     };
 
+    const externalValidation = async () => {
+      const validity = { isValid: true, isCorrect: true };
+      if (isReadOnly) return validity;
+
+      const validationData = getProperty(`${componentPath}__validationData`).value;
+
+      let earlyStop = false;
+      for (let i = 0; i < validationData.length; i++) {
+        if (earlyStop) break;
+        const validationColumn = validationData[i];
+        for (let j = 0; j < validationColumn.length; j++) {
+          const isCorrect = validationColumn[j];
+          const isSet = validationColumn[j] !== null ? true : false;
+
+          if (isCorrect === false) {
+            validity.isCorrect = isCorrect;
+          }
+          if (isSet === false) {
+            validity.isCorrect = false;
+            validity.isValid = false;
+            earlyStop = true;
+            break;
+          }
+        }
+      }
+
+      return validity;
+    };
+
     // TODO: figure out why all validationData isValid-fields are being set to true, even if only one MatrixField is being manipulated
     const validateMatrixHacked = () => {
       const validity = { isValid: true, isCorrect: true };
@@ -223,8 +269,14 @@ export default {
     // TODO: delete, once above TODO is solved
     watch(
       userData,
-      () => {
-        const { isValid, isCorrect } = validateMatrixHacked();
+      async () => {
+        let { isValid, isCorrect } = { isValid: false, isCorrect: false };
+        if (validationConfig) {
+          ({ isValid, isCorrect } = await externalValidation());
+        } else {
+          ({ isValid, isCorrect } = validateMatrixHacked());
+        }
+
         setProperty({
           path: `nodes__${currentNode.value}__components__${props.componentID}__isValid`,
           value: isValid
@@ -261,7 +313,10 @@ export default {
         window.navigator.clipboard.writeText(csv);
       }
     };
-    const selectedMethods = getSelectedMethods(<IMethodsDefinition>getProperty(`nodes__${currentNode.value}__components__${props.componentID}__methods`), methods);
+    const selectedMethods = getSelectedMethods(
+      <IMethodsDefinition>getProperty(`nodes__${currentNode.value}__components__${props.componentID}__methods`),
+      methods
+    );
 
     return {
       id: props.componentID,
@@ -270,7 +325,8 @@ export default {
       rowLabel,
       columnLabel,
       isReadOnly,
-      selectedMethods: selectedMethods
+      selectedMethods: selectedMethods,
+      inputType
     };
   }
 };
@@ -288,7 +344,7 @@ input::-webkit-inner-spin-button {
   min-height: 100%;
   height: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 .matrix .matrix_element {
@@ -317,6 +373,19 @@ th {
   font-size: 130%;
   width: 100%;
   text-align: center;
+}
+
+.column_label {
+  writing-mode: vertical-rl;
+  /* text-orientation: upright; */
+  /* transform: rotate(180deg); */
+  display: flex;
+  align-items: center;
+}
+
+.row_label {
+  min-width: fit-content;
+  margin: 0 auto;
 }
 
 .valid {
