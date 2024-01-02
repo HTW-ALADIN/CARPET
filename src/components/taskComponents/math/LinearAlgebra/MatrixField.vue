@@ -46,7 +46,7 @@ export default {
       const element = <HTMLInputElement>event.target;
       const { index } = <{ index: string }>element.dataset;
       const [column, row] = index.split(",");
-      let value = element.value === "" ? null : props.inputType === "number" ? parseInt(element.value) : element.value;
+      let value = element.value === "" ? null : props.inputType === "number" ? parseFloat(element.value) : element.value;
       setProperty({ path: `${componentPath}__userData__${column}__${row}`, value });
     };
 

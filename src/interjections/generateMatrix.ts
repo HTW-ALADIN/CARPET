@@ -42,6 +42,7 @@ export const generateMatrix = (
     // uneven matrices are required to be filled by the user
     // thus reset validationData
     clonedMatrix.component.initialize.validation.paths = [`taskData__DigraphIteration${n}`];
+    clonedMatrix.component.initialize.user.paths = [`taskData__DigraphIteration${n}`];
 
     return clonedMatrix;
   };
@@ -54,15 +55,13 @@ export const generateMatrix = (
         {
           ...baseMatrixCoordinates,
           i: componentId,
-          y: baseMatrixCoordinates.y - baseMatrixCoordinates.h * verticalFactor,
+          y: baseMatrixCoordinates.y + baseMatrixCoordinates.h * verticalFactor,
           x: baseMatrixCoordinates.x
         }
       ];
       newLayouts[layoutSize] = newLayout;
       return newLayouts;
     }, {} as ILayouts);
-
-    console.log(layouts, newlayouts);
 
     return newlayouts;
   };
@@ -72,7 +71,7 @@ export const generateMatrix = (
   const MatrixId = baseMatrixId;
   let currentMatrixId = MatrixId;
 
-  for (let i = 0; i < n; i++) {
+  for (let i = 1; i <= n; i++) {
     // create i'th multiplication matrix
     nodeComponents[currentMatrixId] = JSON.parse(JSON.stringify(baseMatrix));
     currentMatrixId = currentMatrixId + 1;
@@ -81,8 +80,6 @@ export const generateMatrix = (
     nodeComponents[currentMatrixId] = createDistanceMatrix(baseMatrix, currentNodeId, currentMatrixId, i);
     layouts = adaptLayouts(layouts, currentMatrixId, 1);
   }
-
-  console.log(layouts[2]);
 
   // nodeComponents[secondaryRequirementsVectorId] = setSecondaryNeedsVectorSolutionCalculationPaths(
   //   secondaryNeedsVector,
