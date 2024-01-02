@@ -1,11 +1,13 @@
 import { matrixSelfMultiplication } from "@/interjections/matrixSelfMultiplication";
+import { generateMatrix } from "@/interjections/generateMatrix";
 import { formulaGenerator } from "@/interjections/FormulaGenerator";
 import type { IStore } from "@/helpers/TaskGraphUtility";
 import type { IInterjection } from "@/interfaces/TaskGraphInterface";
 
 const interjectionMap: { [key: string]: Function } = {
   matrixSelfMultiplication,
-  formulaGenerator
+  formulaGenerator,
+  generateMatrix
 };
 
 export const interjectionHandler = async (
