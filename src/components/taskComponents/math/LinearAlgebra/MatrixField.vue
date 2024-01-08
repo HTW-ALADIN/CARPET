@@ -7,6 +7,7 @@
     @keyup="updateField"
     :type="inputType"
     :value="element"
+    step="any"
   />
 </template>
 

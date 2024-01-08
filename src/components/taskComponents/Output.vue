@@ -21,6 +21,9 @@
           </td>
         </tr>
       </table>
+      <div class="output html" v-if="outputType === 'html'">
+        <div v-html="serverOutput" />
+      </div>
     </div>
   </div>
 </template>
@@ -48,7 +51,7 @@ export default {
       return serverOutput;
     });
 
-    const outputType = computed(() => (typeof serverOutput.value === "string" ? "text" : "table"));
+    const outputType = computed(() => (typeof serverOutput.value === "string" ? "html" : "table"));
 
     const validOutput = computed(() => getProperty(dependencyPath.value.Output.validOutput));
 

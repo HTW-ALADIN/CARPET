@@ -5,7 +5,7 @@ import { getCurrentTaskNode } from "@/interjections/interjectionHandler";
 
 export const generateMatrix = (
   storeObject: IStore,
-  dependencies: IMatrixSelfMultiplication["dependencies"],
+  dependencies: any,
   component_id: string = ""
 ) => {
   const { getProperty, setProperty, store } = storeObject;
@@ -16,7 +16,8 @@ export const generateMatrix = (
   const currentNodeId = store.state.currentNode;
 
   const baseMatrix = getProperty(dependencies.baseMatrix);
-  const baseMatrixId = 1;
+  const baseMatrixId = dependencies.baseMatrixId;
+  console.log(baseMatrixId);
   // -1 due to the baseMatrix already existing
   const n = getProperty(dependencies.n) - 1;
 
@@ -41,6 +42,7 @@ export const generateMatrix = (
 
     // uneven matrices are required to be filled by the user
     // thus reset validationData
+    //console.log(n)
     clonedMatrix.component.initialize.validation.paths = [`taskData__DigraphIteration${n}`];
     clonedMatrix.component.initialize.user.paths = [`taskData__DigraphIteration${n}`];
 
@@ -49,7 +51,13 @@ export const generateMatrix = (
 
   const adaptLayouts = (layouts: ILayouts, componentId: number, verticalFactor: number) => {
     const newlayouts = Object.entries(layouts).reduce((newLayouts, [layoutSize, layout]) => {
-      const baseMatrixCoordinates = layout.filter((component: any) => component.i === baseMatrixId)[0];
+      const baseMatrixCoordinates = layout.filter((component: any) => 
+      {
+        return component.i == baseMatrixId
+        })[0];
+      console.log(baseMatrixCoordinates);
+      console.log(layout, layoutSize);
+      console.log(baseMatrixId);
       const newLayout = [
         ...layout,
         {
@@ -60,8 +68,11 @@ export const generateMatrix = (
         }
       ];
       newLayouts[layoutSize] = newLayout;
+      
       return newLayouts;
     }, {} as ILayouts);
+
+    //console.log(layouts, newlayouts);
 
     return newlayouts;
   };
@@ -73,13 +84,16 @@ export const generateMatrix = (
 
   for (let i = 1; i <= n; i++) {
     // create i'th multiplication matrix
-    nodeComponents[currentMatrixId] = JSON.parse(JSON.stringify(baseMatrix));
+    //nodeComponents[currentMatrixId] = JSON.parse(JSON.stringify(baseMatrix));
     currentMatrixId = currentMatrixId + 1;
 
     // create i'th multiplied matrix
     nodeComponents[currentMatrixId] = createDistanceMatrix(baseMatrix, currentNodeId, currentMatrixId, i);
+    console.log(nodeComponents[currentMatrixId]);
     layouts = adaptLayouts(layouts, currentMatrixId, 1);
   }
+
+  //console.log(layouts[2]);
 
   // nodeComponents[secondaryRequirementsVectorId] = setSecondaryNeedsVectorSolutionCalculationPaths(
   //   secondaryNeedsVector,
