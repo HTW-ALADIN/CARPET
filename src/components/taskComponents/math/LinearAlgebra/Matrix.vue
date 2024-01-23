@@ -376,11 +376,11 @@ th {
 }
 
 .column_label {
-  writing-mode: vertical-rl;
+  /* writing-mode: vertical-rl; */
   /* text-orientation: upright; */
   /* transform: rotate(180deg); */
-  display: flex;
-  align-items: center;
+  /* display: flex; */
+  /* align-items: center; */
 }
 
 .row_label {
