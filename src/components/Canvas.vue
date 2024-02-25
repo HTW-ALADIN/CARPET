@@ -87,6 +87,8 @@ import EditableGraph from "@/components/taskComponents/EditableGraph.vue";
 import GanttDiagram from "@/components/taskComponents/scheduling/GanttDiagram.vue";
 import ManipulatableGraph from "@/components/taskComponents/ManipulatableGraph/ManipulatableGraph.vue";
 import ItemPallet from "@/components/taskComponents/DragDrop/ItemPallet/ItemPallet.vue";
+import JSME from "@/components/taskComponents/JSME-Editor/JSME.vue";
+import InputForm  from "@/components/taskComponents/InputForm.vue";
 
 export default {
   name: "Canvas",
@@ -116,7 +118,9 @@ export default {
     Modal,
     PlanGraph,
     EditableGraph,
-    GanttDiagram
+    GanttDiagram,
+    JSME,
+    InputForm
   },
   props: {
     storeObject: Object
