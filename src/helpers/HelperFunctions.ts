@@ -95,4 +95,26 @@ const pollDOMElementRender = (selector: string, fn: Function, interval: number =
   }, interval);
 };
 
-export { isEqualArrayContent, delay, pollGraphRender, pollDOMElementRender };
+const pollClassProperty = async (
+  context: { [key: string]: any },
+  property: string,
+  fn: Function,
+  interval: number = 500
+) => {
+  let propertyExists = context[property] ?? false;
+  const pollProperty = setInterval(() => {
+    propertyExists = context[property];
+
+    if (propertyExists) {
+      clearInterval(pollProperty);
+      fn();
+      return;
+    }
+  }, interval);
+};
+
+const pollWindowsProperty = async (context: Window, property: string, fn: Function, interval: number = 500) => {
+  return pollClassProperty(context, property, fn, interval);
+};
+
+export { isEqualArrayContent, delay, pollGraphRender, pollDOMElementRender, pollWindowsProperty, pollClassProperty };

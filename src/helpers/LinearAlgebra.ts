@@ -230,6 +230,10 @@ class Matrix {
   public getValueInitializedMatrix(value: number | object | null) {
     return this.map(() => value);
   }
+
+  public getMatrix() {
+    return this;
+  }
 }
 
 export { Matrix, Vector, sum, basicallyEqual };

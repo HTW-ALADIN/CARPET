@@ -7,6 +7,7 @@
 import { onMounted, watch, toRefs, unref, computed, onBeforeUnmount } from "vue";
 import { DOTGraphComponent } from "@/components/taskComponents/DOTGraph/DOTGraph";
 import type { DOTGraphProps } from "@/components/taskComponents/DOTGraph/DOTGraph";
+import * as d3 from "d3";
 import { ensurePathExists } from "@/store/taskGraph";
 
 import { graphviz } from "d3-graphviz";
@@ -20,18 +21,9 @@ const reactiveProps = toRefs(props);
 const { storeObject, componentID, componentPath, graphID } = reactiveProps;
 
 const component = new DOTGraphComponent(storeObject, unref(componentID), unref(componentPath));
-
 const componentData = component.getComponentData();
-
 const taskData = component.getTaskData();
-
-const currentTaskGraphNode = component.getCurrentTaskGraphNode();
-
 const dependencyPaths = component.getDependencyPaths();
-
-const currentNodeData = computed(() => {
-  return unref(storeObject).getProperty(`nodes__${currentTaskGraphNode}`);
-});
 
 const completeGraphID = unref(graphID)
   ? `graph_${unref(componentID)}_${unref(graphID)}`
@@ -49,11 +41,19 @@ const getDOTDescription = () => {
 };
 
 const renderGraph = (description: string) => {
+  // TODO: causes the error: "transition.js:17 Uncaught Error: transition 5 not found"
+  // does not impair functionality - look into it later
+  const transition = () => {
+    return d3.transition("animateGraph").duration(150).ease(d3.easeLinear);
+  };
+
   graphviz(`#${completeGraphID}`, {
     fit: true,
     zoom: false,
     useWorker: false
-  }).renderDot(description);
+  })
+    .transition(() => transition())
+    .renderDot(description);
 };
 
 const renderIfGraph = () => {

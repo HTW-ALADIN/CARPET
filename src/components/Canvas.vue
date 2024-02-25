@@ -33,8 +33,8 @@
           :y="item.y"
           :w="item.w"
           :h="item.h"
-          :minW="item.minW ?? 1"
-          :minH="item.minH ?? 1"
+          :minW="parseInt(item.minW) ?? 1"
+          :minH="parseInt(item.minH) ?? 1"
           :i="nodeComponentIds[item.i]"
           :drag-allow-from="`.${CONSTANTS.DRAGELEMENTCLASS}`"
           @move="setCoordinates"
@@ -89,10 +89,12 @@ import ManipulatableGraph from "@/components/taskComponents/ManipulatableGraph/M
 import ItemPallet from "@/components/taskComponents/DragDrop/ItemPallet/ItemPallet.vue";
 import JSME from "@/components/taskComponents/JSME-Editor/JSME.vue";
 import InputForm  from "@/components/taskComponents/InputForm.vue";
+import MoleculeEditor from "@/components/taskComponents/Chemistry/MoleculeEditor/MoleculeEditor.vue";
 
 export default {
   name: "Canvas",
   components: {
+    MoleculeEditor,
     ItemPallet,
     ManipulatableGraph,
     BackgroundGraph,
