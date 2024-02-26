@@ -97,13 +97,15 @@ export default {
       const rowIndex = <number>props.rowIndex;
       const columnIndex = <number>props.columnIndex;
 
-      const userData = getProperty(`${componentPath}__userData`).value;
-
-      const validationMatrix: Array<Array<boolean | null>> = await store.dispatch("fetchTaskData", {
-        userData,
-        endpoint: `${currentTask.value}/${validationConfig.instruction}`
+      const userData = getProperty(`${componentPath}__userData`);
+      
+      
+        await store.dispatch("fetchTaskData", {
+       
+        endpoint: `${currentTask.value}/${validationConfig.instruction}`,
+        payload: { userData, instruction: validationConfig.instruction, type: currentTask.value, task: currentTask.value }
       });
-
+      const validationMatrix: Array<Array<boolean | null>> = getProperty(`taskData__validationmatrix`)
       const isCorrectValue = <boolean>validationMatrix[rowIndex][columnIndex];
       const isCorrect = isCorrectValue;
       const isSet = isCorrectValue !== null ? true : false;
@@ -121,7 +123,7 @@ export default {
       () => props.element,
       async () => {
         if (validationConfig) {
-          await externalValidation();
+          await externalValidation();   
         } else {
           validateMatrixField(<number>props.rowIndex, <number>props.columnIndex);
         }

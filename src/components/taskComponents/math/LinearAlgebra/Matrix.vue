@@ -195,7 +195,7 @@ export default {
       const validity = { isValid: true, isCorrect: true };
       if (isReadOnly) return validity;
 
-      const validationData = getProperty(`${componentPath}__validationData`).value;
+      const validationData = getProperty(`${componentPath}__validationData`);
 
       let earlyStop = false;
       for (let i = 0; i < validationData.length; i++) {
