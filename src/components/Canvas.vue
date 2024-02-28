@@ -70,6 +70,7 @@ import Modal from "@/components/Modal.vue";
 
 import Matrix from "@/components/taskComponents/math/LinearAlgebra/Matrix.vue";
 import DOTGraph from "@/components/taskComponents/DOTGraph/DOTGraph.vue";
+import DecisionTree from "@/components/taskComponents/DecisionTree/DecisionTree.vue";
 import TaskConfiguration from "@/components/taskComponents/TaskConfiguration.vue";
 import VisualGraphTraversal from "@/components/taskComponents/VisualGraphTraversal.vue";
 import PathDisplay from "@/components/taskComponents/PathDisplay.vue";
@@ -101,6 +102,7 @@ export default {
     Hint,
     Matrix,
     DOTGraph,
+    DecisionTree,
     TaskConfiguration,
     GridItem,
     GridLayout,

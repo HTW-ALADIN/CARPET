@@ -117,4 +117,21 @@ const pollWindowsProperty = async (context: Window, property: string, fn: Functi
   return pollClassProperty(context, property, fn, interval);
 };
 
-export { isEqualArrayContent, delay, pollGraphRender, pollDOMElementRender, pollWindowsProperty, pollClassProperty };
+/* Zufällige Zeichenketten erzeugen mit einer Zeichenlänge von 5 */
+const createRandomString = (length: number = 5) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let s = "";
+
+  while (s.length < length)
+    s += characters.charAt(Math.floor(Math.random() * characters.length));
+  return s;
+}
+
+/* String mit Regex normalisieren - Mehrfache Leerzeichen werden mit einem Leerzeichen ersetzt */
+const normalizeString = (s: string | null, regex: string = "\\s+") => {
+  if (s == null)
+    return null;
+  return s.replace(new RegExp(regex, "gi"), "_").trim();
+}
+
+export { isEqualArrayContent, delay, pollGraphRender, pollDOMElementRender, pollWindowsProperty, pollClassProperty, createRandomString, normalizeString };
