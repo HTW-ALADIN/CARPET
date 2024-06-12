@@ -40,11 +40,6 @@ const routes = [
     name: "Replay",
     component: () => import(/* webpackChunkName: "replay" */ "@/views/Replay.vue")
   },
-  {
-    path: "/test",
-    name: "Test",
-    component: () => import(/* webpackChunkName: "test" */ "@/views/ComponentTest.vue")
-  }
 ];
 
 const router = createRouter({

@@ -76,7 +76,7 @@ export default {
         return component.isCorrect;
       });
       const isValid =
-        taskMode.value === "practice"
+        taskMode === "practice"
           ? isCorrect && Object.values(components.value).every((component: any) => component.isValid)
           : Object.values(components.value).every((component: any) => component.isValid);
 
