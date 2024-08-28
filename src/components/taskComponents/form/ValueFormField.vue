@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { evaluateValue } from "./validation";
 import { delay } from "@/helpers/HelperFunctions.ts";
 
@@ -19,18 +19,43 @@ export default {
   props: {
     element: Object,
     elementId: String,
+    /************Zakaria ***********************************/
+    componentID: String,
+    storeObject: Object
+    /*******************end ******************************/
   },
   setup(props, { emit }) {
+    
+    
+    const { store, getProperty, setProperty } = props.storeObject;
+    const currentNode = computed(() => store.state.currentNode);
+    const currentTask = computed(() => getProperty("currentTask"));
+    const componentPath = `nodes__${currentNode.value}__components__${props.componentID}__component`;
+    const valuepath = `${componentPath}__form__seed__value`
+    const value = getProperty(valuepath);
+    const lokalvalue = ref(value);
+    
+
+    
     const emitEvent = (event) => {
       delay(
         "formFill",
         () => {
+          
+          /**********************************Zakaria *********************************************/
+          //setProperty(valuepath,value);
+          setProperty({
+          path: `nodes__${currentNode.value}__components__${props.componentID}__component__form__seed__value`,
+          value: value
+        });
+          /************************************End *************************************************/
           evaluateValue(props);
           emit("updateElement", event);
         },
         500
       );
     };
+    watch(lokalvalue,emitEvent);
     onMounted(() => {
       evaluateValue(props);
     });

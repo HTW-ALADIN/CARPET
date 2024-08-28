@@ -7,7 +7,10 @@
     @keyup="updateField"
     :type="inputType"
     :value="element"
+    :min="min"
+    :max="max"
   />
+  <!-- min max zakaria-->
 </template>
 
 <script lang="ts">
@@ -21,7 +24,11 @@ export default {
     element: Number,
     storeObject: Object,
     componentID: Number,
-    inputType: String
+    inputType: String,
+    /****zakaria***/
+    min: Number,
+    max:Number
+    /*****End***/
   },
   setup(props) {
     const { store, getProperty, setProperty } = props.storeObject;
@@ -46,8 +53,9 @@ export default {
       const element = <HTMLInputElement>event.target;
       const { index } = <{ index: string }>element.dataset;
       const [column, row] = index.split(",");
-      let value = element.value === "" ? null : props.inputType === "number" ? parseInt(element.value) : element.value;
+      let value = element.value === "" ? null : props.inputType === "number" ? parseFloat(element.value) : element.value;
       setProperty({ path: `${componentPath}__userData__${column}__${row}`, value });
+      checkValidity(event);
     };
 
     const setVisualCorrectness = (isCorrect: boolean, isSet: boolean, rowIndex: number, columnIndex: number) => {
@@ -127,13 +135,39 @@ export default {
         }
       }
     );
-
-    return { updateField };
+    /*******************************************      Zakaria ******************************************************/
+    const checkValidity = (event: Event) => {
+      const element = <HTMLInputElement>event.target;
+      const value = element.value ? parseFloat(element.value) : null;
+      
+      if (value < props.min || value > props.max) {
+        element.classList.add('out-of-range');
+        element.classList.remove('in-range');
+        let value:String = "invalid";
+        setProperty({ path: `${componentPath}__checkUserDataValidity`, value }); 
+      } else {
+        element.classList.remove('out-of-range');
+        element.classList.add('in-range');
+        let value:String = "valid";
+        setProperty({ path: `${componentPath}__checkUserDataValidity`, value }); 
+      }
+    };
+    /********************************************** End ******************************************************** */
+    
+    return { updateField , checkValidity };
   }
 };
 </script>
 
 <style scoped>
+/************************************** Zakaria **************************/
+.out-of-range {
+  border: 7px solid red; /* Ändere die Breite der Linie und den Stil */
+}
+.in-range {
+  border: 7px solid green; /* Ändere die Breite der Linie und den Stil */
+}
+/************************************End  *******************************/
 .scalar {
   width: 30px;
   text-align: center;

@@ -88,7 +88,12 @@ import GanttDiagram from "@/components/taskComponents/scheduling/GanttDiagram.vu
 import ManipulatableGraph from "@/components/taskComponents/ManipulatableGraph/ManipulatableGraph.vue";
 import ItemPallet from "@/components/taskComponents/DragDrop/ItemPallet/ItemPallet.vue";
 import MoleculeEditor from "@/components/taskComponents/Chemistry/MoleculeEditor/MoleculeEditor.vue";
-
+/******************************zakaria  *********************************************/
+import diagramm from "@/components/taskComponents/Diagramm/diagramm.vue";
+import EchtButton from "@/components/taskComponents/EchtButton.vue";
+import Bild from "@/components/taskComponents/Bild.vue";
+import BackendFormular from "@/components/taskComponents/BackendFormular.vue";
+/**********************************End *********************************************/
 export default {
   name: "Canvas",
   components: {
@@ -118,7 +123,13 @@ export default {
     Modal,
     PlanGraph,
     EditableGraph,
-    GanttDiagram
+    GanttDiagram,
+    //******************************************Zakaria*****************************/
+    diagramm,
+    EchtButton,
+    Bild,
+    BackendFormular
+    /*****************************************End *********************************/
   },
   props: {
     storeObject: Object

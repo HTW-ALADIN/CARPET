@@ -26,6 +26,7 @@
     "@vueuse/core": "^10.3.0",
     "ace-builds": "^1.22.0",
     "axios": "^1.4.0",
+    "chart.js": "^3.9.1",
     "clickout-event": "^1.1.2",
     "d3": "^7.8.5",
     "d3-contour": "^2.0.0",

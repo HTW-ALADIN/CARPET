@@ -10,6 +10,7 @@ import { computed, watch } from "vue";
 import DifficultyPicker from "@/components/taskComponents/DifficultyPicker.vue";
 import ParameterSelection from "@/components/taskComponents/ParameterSelection.vue";
 
+
 export default {
   props: {
     componentID: Number,
@@ -17,7 +18,7 @@ export default {
   },
   components: {
     DifficultyPicker,
-    ParameterSelection
+    ParameterSelection,
   },
   setup(props) {
     const { store, getProperty, setProperty } = props.storeObject;
@@ -25,12 +26,16 @@ export default {
 
     const currentNode = computed(() => getProperty("currentNode"));
     const taskData = computed(() => getProperty("taskData"));
-
+    
+    
+    
     watch(taskData, () => {
       setProperty({ path: `nodes__${currentNode.value}__components__${props.componentID}__isValid`, value: true });
     });
 
-    return { isAdvancedUser, props };
+    return { isAdvancedUser,
+              props,
+            };
   }
 };
 </script>
