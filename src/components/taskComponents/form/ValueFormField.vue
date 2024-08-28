@@ -19,14 +19,14 @@ export default {
   props: {
     element: Object,
     elementId: String,
-    /************Zakaria *********** */
+    /************Zakaria ***********************************/
     componentID: String,
     storeObject: Object
-    /*******************end */
+    /*******************end ******************************/
   },
   setup(props, { emit }) {
     
-    /**********************************Zakaria ************** */
+    
     const { store, getProperty, setProperty } = props.storeObject;
     const currentNode = computed(() => store.state.currentNode);
     const currentTask = computed(() => getProperty("currentTask"));
@@ -36,20 +36,19 @@ export default {
     const lokalvalue = ref(value);
     
 
-    //const emitEvent = (event) => {
-      const emitEvent = (event) => {
+    
+    const emitEvent = (event) => {
       delay(
         "formFill",
         () => {
           
-          /****zakaria */
-          console.log(valuepath);
+          /**********************************Zakaria *********************************************/
           //setProperty(valuepath,value);
           setProperty({
           path: `nodes__${currentNode.value}__components__${props.componentID}__component__form__seed__value`,
           value: value
         });
-          /*****end */
+          /************************************End *************************************************/
           evaluateValue(props);
           emit("updateElement", event);
         },

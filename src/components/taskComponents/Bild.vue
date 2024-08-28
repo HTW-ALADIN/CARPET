@@ -1,3 +1,4 @@
+<!--**************************************************************** Zakaria *********************************** -->
 <template>
     <div class="container">
         <img :src="bildPath" alt="Bild konnte nicht hochgeladen werden!!!" class="background-image">
@@ -84,7 +85,8 @@
             // Function to handle input events
             const handleInput = (placeholder: string, event: Event) => {
                 const target = event.target as HTMLInputElement;
-                const value = target.value;
+                const value = parseFloat(target.value);
+                if (isNaN(value)) target.value = '0';
                 if (placeholder in inputFelderValues.value) {
                     inputFelderValues.value[placeholder] = value;
                 }
@@ -156,5 +158,6 @@
     color: black;
 }
 
+/*************************************************************End  **********************************/
 
 </style>

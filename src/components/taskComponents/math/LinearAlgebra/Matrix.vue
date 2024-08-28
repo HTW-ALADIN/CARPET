@@ -112,7 +112,7 @@ export default {
     const solutionData = computed(() => loadData(`${componentPath}__solutionData`));
     const validationData = computed(() => loadData(`${componentPath}__validationData`));
 
-    //************************************************************* Zakaria************************************/
+    //************************************************************ Zakaria ************************************/
     let rowAnzahl = undefined;
     let standardZeile = undefined;
     let newData = []; // Initialisiere ein neues Array, um die duplizierten Daten zu speichern
@@ -159,7 +159,7 @@ export default {
     });
 
 
-    // Min- und Max-Werte für jede Spalte berechnen und überwachen
+    // Min- und Max-Werte für jede Spalte  überwachen
     // Erstelle ein computed-Property, das die Daten für die Spaltenbereiche lädt
     const columnRange = computed(() => loadColumnRangeData(`${componentPath}__columnRange`));
 
@@ -230,46 +230,49 @@ export default {
         // Gibt ein leeres Array zurück, wenn keine Daten vorhanden sind
         return [];
     };
-    /*
+
+    const spaltenMaxSummeUeberwachen = () => {
     // Überprüfen, ob 'spaltenMaxSumme' nicht leer ist
     if (spaltenMaxSumme.value.length != 0) {
-      // Wählen Sie die Datenmatrix basierend auf 'rowAnzahl' oder 'newData'
-      const MatrixData = rowAnzahl === null ? userData : newData;
+      const MatrixData =userData.value;
 
       // Abrufen der maximalen Summendaten für die Spalten
       const spaltenMaxSummeValue = spaltenMaxSumme.value;
-      console.log(spaltenMaxSummeValue[0]?.spaltenName); // Protokolliere den Namen der ersten Spalte
+      // Iteriere über jede Spalte in spaltenMaxSummeValue
+      spaltenMaxSummeValue.forEach(spalte => {
+        // Suche den Index des Spaltennamens in columnLabel.value
+        const index = columnLabel.value.findIndex(name => name === spalte.spaltenName);
 
-      // Schleife durch jede Spalte in 'columnLabel'
-      for (let i = 0; i < columnLabel.value.length; i++) {
-        const currentSpaltenName = columnLabel.value[i]; // Aktuellen Spaltennamen abrufen
-        console.log(currentSpaltenName); // Protokolliere den Spaltennamen
-
-        // Überprüfen, ob der aktuelle Spaltenname in den maximalen Summendaten vorhanden ist
-        if (currentSpaltenName === spaltenMaxSummeValue[0]?.spaltenName) {
-          console.log(`Found '${currentSpaltenName}' in columnLabel`);
+        // Prüfe, ob der Spaltenname gefunden wurde
+        if (index !== -1) {
           
           // Berechnen Sie die Summe der Werte in der Spalte
-          let sum = 0;
+          let sum:number = 0;
           for (let j = 0; j < MatrixData.length; j++) {
             // Zugriff auf den Wert jeder Zeile basierend auf der Spaltenindex
-            let lastValue = MatrixData[j][i];
-            sum += lastValue;
+            let value:number = Number(MatrixData[j][index]);
+            sum += value;
           }
-          
-          console.log(`Summe der Werte in '${spaltenMaxSummeValue[0]?.spaltenName}' :`, sum);
-          
-          // Überprüfen, ob die Summe die maximale Summe überschreitet
-          if (sum > spaltenMaxSummeValue[0]?.maxSumme) {
-            alert('Die Summe der Spalte "' + currentSpaltenName + '" darf nicht größer als ' + spaltenMaxSummeValue[0]?.maxSumme);
+          //console.log(`Spalte '${spalte.spaltenName}' gefunden an Index ${index}. Maximale Summe: ${spalte.maxSumme}. sum: ${sum}`);
+          if(sum > spalte.maxSumme){
+            //alert(`Die Summe der Spalte '${spalte.spaltenName}' darf nicht größer als ${spalte.maxSumme}`);
+            setProperty({ path: `${componentPath}__checkUserDataValidity`, value: "invalid" });
           }
-        } else {
-          console.log(`'${currentSpaltenName}' not found in columnLabel`);
+          else{
+            setProperty({ path: `${componentPath}__checkUserDataValidity`, value: "valid" });
+          }
+        } 
+        else {
+          console.log(`Spalte '${spalte.spaltenName}' nicht in columnLabel gefunden.`);
         }
-      }
-    }*/
+      });
+    }
+  }
 
     //**********************************************************END ******************************************************************/
+
+
+    
     const initialize = async (instructions: IMatrixInstruction) => {
       Object.entries(instructions).forEach(([name, instructions]) => {
         // TODO: change replay functionality for stepping in task to apply incremental changes behind loading screen
@@ -344,15 +347,6 @@ export default {
       },
       { deep: true }
     );
-    /*
-    const loadData = (path) => {
-      const data = getProperty(path);
-      if (data) {
-        if (data.length > 1) return data;
-        return data[0].map((scalar) => [scalar]);
-      } else return [];
-    };
-    */
     const validateMatrix = () => {
       const validity = { isValid: true, isCorrect: true };
       if (isReadOnly) return validity;
@@ -471,6 +465,7 @@ export default {
           path: `nodes__${currentNode.value}__components__${props.componentID}__isCorrect`,
           value: isCorrect
         });
+        spaltenMaxSummeUeberwachen();
       },
       { deep: true }
     );

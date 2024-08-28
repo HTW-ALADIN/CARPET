@@ -96,7 +96,7 @@
             
             // Berechne die Schrittgröße für die Ticks
             const stepSize = Math.round((Math.max.apply(Math, labels.value) / 10) / 5) * 5;
-            console.log('hier'+stepSize)
+            
             chartInstance = new Chart(ctx, {
               type: type.value || 'line',
               data: {

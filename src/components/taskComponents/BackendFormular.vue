@@ -84,24 +84,19 @@ export default {
     let actions = ref(getProperty(`${path}__component__actions`));
     
     const updateActions = () => {
+        
         actions.value = actions.value.map((action) => {
             const valid = action.dependsOn.every((fieldId) => {
             const formfield: HTMLInputElement = document.querySelector(`input[class^="${fieldId}"]`);
             return !Array.from(formfield.classList).includes("invalid");
             });
         action.disabled = valid ? false : true;
+        console.log(actions.value);
         return action;
         });
         };
-    
-    /************************* nur zum test 
-    let komponentName = null; 
-    komponentName = getProperty(`${path}__component__KomponentName`);;
-    console.log('Componentpath : '+ komponentName);*/ 
 
-    
- 
-    
+    /************************************************Zakaria  **************************************/
     const preparePayload = (instruction) => {
         const parameters: { [key: string]: any } = Object.entries(elements.value).reduce(
             (parameters, [name, parameter]: [string, { [key: string]: any }]) => {
@@ -129,7 +124,7 @@ export default {
         
         return payload;
     };
-    
+    /************************************************End  ***********************************/
 
     const currentTask = computed(() => getProperty("currentTask"));
 
@@ -137,6 +132,7 @@ export default {
         /******** Zakaria : nur zum testen was ist das Ergebnis von preparePayload-methode */
         const payload = preparePayload(instruction);
         console.log("Payload:", payload); // Ausgabe des Payloads in der Konsole
+        /***********End  ******************/
         store.dispatch("fetchTaskData", {
             payload: preparePayload(instruction),
             endpoint: `${currentTask.value}/${instruction}`
