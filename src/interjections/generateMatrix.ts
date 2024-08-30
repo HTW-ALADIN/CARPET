@@ -39,7 +39,8 @@ export const generateMatrix = (
       }
     };
     clonedMatrix.component.initialize.solution.paths = [`taskData__DigraphIteration${n}`];
-
+    clonedMatrix .component.rowLabel = `taskData__DigraphIterationHeader${n}`;
+    clonedMatrix .component.columnLabel = `taskData__DigraphIterationHeader${n}`;
     // uneven matrices are required to be filled by the user
     // thus reset validationData
     //console.log(n)
