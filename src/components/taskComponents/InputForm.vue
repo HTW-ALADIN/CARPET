@@ -3,32 +3,30 @@
     <h2>{{ title }}</h2>
     <div class="parameter_form_columns">
       <div class="parameter_labels">
-        <p v-for="(element, key) in elements" :key="key" v-html="element.label"
-          v-tooltip.left-center="element.description || ''" />
+        <p
+          v-for="(element, key) in elements"
+          :key="key"
+          v-html="element.label"
+          v-tooltip.left-center="element.description || ''"
+        />
       </div>
       <div class="parameter_fields">
-        <component @updateElement="updateElement" :is="element.formType" v-for="(element, key) in elements" :key="key"
-          :element="element" :elementId="key" :storeObject="storeObject" :componentID="componentID" />
+        <component
+          @updateElement="updateElement"
+          :is="element.formType"
+          v-for="(element, key) in elements"
+          :key="key"
+          :element="element"
+          :elementId="key"
+          :storeObject="storeObject"
+          :componentID="componentID"
+        />
       </div>
     </div>
   </div>
 </template>
-  
+
 <script lang="ts">
-import type {
-  SerializedTaskComponent,
-  SerialisedDependencies,
-  ComponentDependencies,
-  TaskGraphPath,
-  ComponentProps,
-  ComponentData
-} from "@/components/taskComponents/TaskComponent";
-import { TaskComponent } from "@/components/taskComponents/TaskComponent";
-import { read } from "fs";
-import type { ComputedRef } from "vue";
-
-
-
 import { computed, watch, ref } from "vue";
 import RangeFormField from "@/components/taskComponents/form/RangeFormField.vue";
 import DropdownFormField from "@/components/taskComponents/form/DropdownFormField.vue";
@@ -36,14 +34,9 @@ import CheckboxFormField from "@/components/taskComponents/form/CheckboxFormFiel
 import ValueFormField from "@/components/taskComponents/form/ValueFormField.vue";
 import DualSlider from "@/components/taskComponents/form/DualSlider.vue";
 import ActionButtons from "@/components/taskComponents/mixins/ActionButtons.vue";
-import { validateHeaderName } from "http";
-import { isValidElement } from "react";
 import { unref } from "vue";
 
-
-
 export default {
-
   props: {
     componentID: Number,
     storeObject: Object
@@ -66,7 +59,6 @@ export default {
     const currentNode = store.state.currentNode;
     const path = `nodes__${currentNode}__components__${props.componentID}`;
 
-
     const taskData = computed(() => getProperty(`taskData`));
     watch(
       taskData,
@@ -79,9 +71,7 @@ export default {
     const title = getProperty(`${path}__component__title`);
     const elements = computed(() => getProperty(`${path}__component__form`));
 
-
     const updateElement = (event: Event) => {
-
       const { classList, value, type, checked } = <HTMLFormElement>event.target;
       const className = classList[0];
       const payload = type === "checkbox" ? checked : value;
@@ -94,44 +84,30 @@ export default {
       setProperty({ path: `nodes__${currentNode}__components__${props.componentID}__isValid`, value: true });
 
       for (const [key, element] of Object.entries(elements)) {
-
         const isValid = element.isValid;
 
-        console.log("isValidvalue" + isValid);
         if (isValid == false) {
-          setProperty({ path: `nodes__${currentNode}__components__${props.componentID}__isValid`, value: true});
-
+          setProperty({ path: `nodes__${currentNode}__components__${props.componentID}__isValid`, value: true });
         }
       }
-    }
+    };
 
     const validate = (elementPath: string, payload: string) => {
-
-
       store.setProperty({ path: `${path}__validation`, value: validate });
 
-     const datainput = unref(store).getProperty(`taskData__Position`);
-     console.log(`${elementPath}__validation`);
-     console.log(datainput);
+      const datainput = unref(store).getProperty(`taskData__Position`);
       if (datainput == payload) {
-      
         setProperty({ path: `${elementPath}__isValid`, value: true });
         validatecomponent();
         console.log("erfolg");
-      }
-      else {
+      } else {
         setProperty({ path: `${elementPath}__isValid`, value: false });
       }
     };
     return { elements, updateElement, title };
   }
 };
-
-
-
 </script>
-  
-
 
 <style scoped>
 .parameter_form {
@@ -186,4 +162,3 @@ export default {
   text-shadow: 1px 1px 1px black;
 }
 </style>
-  

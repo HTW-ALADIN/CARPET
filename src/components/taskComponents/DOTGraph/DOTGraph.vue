@@ -76,7 +76,7 @@ const renderIfGraph = () => {
 const unsubscribe = unref(storeObject).store.subscribe(
   (action: { type: string; payload: { path: string } }, state: object) => {
     if (action.type === "SET_PROPERTY") {
-      if (action.type === "SET_PROPERTY" && action.payload.path === dependencyPaths.dotDescription) {
+      if (action.payload.path === dependencyPaths.dotDescription) {
         renderIfGraph();
       }
     }
