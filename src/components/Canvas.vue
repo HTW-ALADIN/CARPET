@@ -43,12 +43,17 @@
           :data-id="nodeComponentIds[item.i]"
         >
           <img class="dragHandler" :class="CONSTANTS.DRAGELEMENTCLASS" src="/img/drag_arrow.webp" />
-          <component
-            :is="nodeComponents[nodeComponentIds[item.i]].type"
-            :componentID="parseInt(nodeComponentIds[item.i])"
-            :storeObject="storeObject"
-            :componentPath="`nodes__${currentNode}__components__${parseInt(nodeComponentIds[item.i])}`"
-          ></component>
+          <div class="componentLayout">
+            <div class="componentLayout__Header">{{ nodeComponents[nodeComponentIds[item.i]].name }}</div>
+            <div class="componentLayout__Body">
+              <component
+                :is="nodeComponents[nodeComponentIds[item.i]].type"
+                :componentID="parseInt(nodeComponentIds[item.i])"
+                :storeObject="storeObject"
+                :componentPath="`nodes__${currentNode}__components__${parseInt(nodeComponentIds[item.i])}`"
+              ></component>
+            </div>
+          </div>
         </grid-item>
       </grid-layout>
     </div>
@@ -88,6 +93,8 @@ import EditableGraph from "@/components/taskComponents/EditableGraph.vue";
 import GanttDiagram from "@/components/taskComponents/scheduling/GanttDiagram.vue";
 import ManipulatableGraph from "@/components/taskComponents/ManipulatableGraph/ManipulatableGraph.vue";
 import ItemPallet from "@/components/taskComponents/DragDrop/ItemPallet/ItemPallet.vue";
+import JSME from "@/components/taskComponents/JSME-Editor/JSME.vue";
+import InputForm from "@/components/taskComponents/InputForm.vue";
 import MoleculeEditor from "@/components/taskComponents/Chemistry/MoleculeEditor/MoleculeEditor.vue";
 
 export default {
@@ -120,7 +127,9 @@ export default {
     Modal,
     PlanGraph,
     EditableGraph,
-    GanttDiagram
+    GanttDiagram,
+    JSME,
+    InputForm
   },
   props: {
     storeObject: Object
@@ -268,6 +277,27 @@ export default {
   width: 20px;
   height: 20px;
   z-index: 999;
+}
+
+.componentLayout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.componentLayout__Header {
+  background-color: #f3f3f3;
+  border-bottom: 1px solid black;
+  padding: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.componentLayout__Body {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
 
 .vgl-layout {

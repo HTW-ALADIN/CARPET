@@ -110,6 +110,7 @@ export class ManipulatableGraphComponent extends TaskComponent<
 
   private loadUserGraph(): Graph {
     const componentData = this.getComponentData();
+    console.log(unref(componentData).userGraph);
     const serializedUserGraph = unref(componentData).userGraph;
     const userGraph = new Graph(this.graphOptions).import(serializedUserGraph);
     return userGraph;
