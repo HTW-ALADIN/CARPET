@@ -26,16 +26,15 @@ export interface MoleculeEditorProps extends ComponentProps {
 
 export type MoleculeEditorComponentType = "MoleculeEditor";
 
-export interface serialisedMoleculeEditorDependencies extends SerialisedDependencies {
-  smilesCode?: TaskGraphPath;
-}
+export interface serialisedMoleculeEditorDependencies extends SerialisedDependencies {}
 
-export interface MoleculeEditorDependencies extends ComponentDependencies {
-  smilesCode?: string;
-}
+export interface MoleculeEditorDependencies extends ComponentDependencies {}
 
 export interface MoleculeEditorComponentData extends ComponentData {
-  userInput: string;
+  readOnly: boolean;
+  smiles: string;
+  initialSmiles: TaskGraphPath;
+  solution?: TaskGraphPath;
 }
 
 export interface SerializedMoleculeEditorComponent
@@ -53,9 +52,27 @@ export class MoleculeEditorComponent extends TaskComponent<
    */
   public jsmeID = "jsmeContainer";
   public jsmeApplet: any;
+  static IDcounter: number = 0;
+
+  constructor(storeObject: any, componentID: number, serialisedTaskComponentPath: TaskGraphPath) {
+    super(storeObject, componentID, serialisedTaskComponentPath);
+    this.jsmeID = `${this.jsmeID}_${MoleculeEditorComponent.IDcounter}`;
+    MoleculeEditorComponent.IDcounter++;
+  }
 
   public validate() {
-    const isValid = true;
+    let isValid = true;
+
+    const solutionPath = unref(this.storeObject).getProperty(`${this.serialisedTaskComponentPath}__component__solution`);
+    if (solutionPath) {
+      const solution = unref(this.storeObject).getProperty(solutionPath);
+
+      const userInput = unref(this.storeObject).getProperty(`${this.serialisedTaskComponentPath}__component__smiles`);
+      if (solution !== userInput) {
+        isValid = false;
+      }
+    }
+
     unref(this.storeObject).setProperty({ path: `${this.serialisedTaskComponentPath}__isValid`, value: isValid });
 
     return isValid;
@@ -63,7 +80,7 @@ export class MoleculeEditorComponent extends TaskComponent<
 
   // https://jsme.cloud.douglasconnect.com/JSME_2017-02-26/jsme/jsme.nocache.js
   // obsolete
-  public async loadJSME(JSMEsource: string = "https://jsme.cloud.douglasconnect.com/JSME_2017-02-26/jsme/jsme.nocache.js") {
+  public async loadJSME(JSMEsource: string = "/public/jsme/jsme.nocache.js") {
     const script = document.createElement("script");
     script.src = JSMEsource;
     document.head.appendChild(script);
@@ -75,12 +92,40 @@ export class MoleculeEditorComponent extends TaskComponent<
       "JSApplet",
       async () => {
         if (window.JSApplet) {
-          this.jsmeApplet = new window.JSApplet.JSME(this.jsmeID, { options: props.options ?? {} });
-          this.jsmeApplet.readGenericMolecularInput("Clc(c(Cl)c(Cl)c1C(=O)O)c(Cl)c1Cl");
+          this.jsmeApplet = new window.JSApplet.JSME(this.jsmeID, { options: this.getOptions(props) });
+
+          const initialSmilesPath = unref(this.storeObject).getProperty(
+            `${this.serialisedTaskComponentPath}__component__initialSmiles`
+          );
+          const initialSmiles = unref(this.storeObject).getProperty(initialSmilesPath);
+          if (initialSmiles) {
+            unref(this.storeObject).setProperty({
+              path: `${this.serialisedTaskComponentPath}__component__smiles`,
+              value: initialSmiles
+            });
+          }
+
+          // render Smiles
+          this.renderSmiles();
         }
       },
-      150
+      50
     );
+  }
+
+  public renderSmiles() {
+    const smilesCode = unref(this.storeObject).getProperty(`${this.serialisedTaskComponentPath}__component__smiles`);
+    this.jsmeApplet.readGenericMolecularInput(smilesCode);
+  }
+
+  private getOptions(props: MoleculeEditorProps) {
+    // See JSME options-api at https://jsme-editor.github.io/dist/doc.html
+    let options = "";
+    const isReadOnly = unref(this.storeObject).getProperty(`${this.serialisedTaskComponentPath}__component__readOnly`);
+    if (isReadOnly) {
+      options = "reaction, depict";
+    }
+    return options;
   }
 
   public setJSMECallbackHandler() {
@@ -91,10 +136,14 @@ export class MoleculeEditorComponent extends TaskComponent<
         this.jsmeApplet.setCallBack("AfterStructureModified", (jsmeEvent: { src: any }) => {
           const jsme = jsmeEvent.src;
           const smilesCode = jsme.smiles();
-          unref(this.storeObject).setProperty({ path: `${this.serialisedTaskComponentPath}__userInput`, value: smilesCode });
+          unref(this.storeObject).setProperty({
+            path: `${this.serialisedTaskComponentPath}__component__smiles`,
+            value: smilesCode
+          });
+          this.validate();
         });
       },
-      150
+      10
     );
   }
 }

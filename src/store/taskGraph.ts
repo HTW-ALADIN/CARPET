@@ -170,6 +170,7 @@ const actions = {
 const getters = {
   getPropertyFromPath: (state: IState) => (path: string) => {
     if (typeof path !== "string") {
+      console.log(path);
       throw new Error(`Path is not a string: ${path}`);
     }
     const splitPath = path.split("__");

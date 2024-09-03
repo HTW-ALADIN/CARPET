@@ -36,6 +36,7 @@
     "grid-layout-plus": "^1.0.2",
     "install": "^0.13.0",
     "interactjs": "^1.10.18",
+    "jsme-vue": "^0.0.10",
     "lodash": "^4.17.21",
     "pinia": "^2.0.36",
     "react-dnd-html5-backend": "^16.0.1",

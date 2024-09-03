@@ -12,27 +12,24 @@ const reactiveProps = toRefs(props);
 const { storeObject, componentID, componentPath } = reactiveProps;
 
 const component = new MoleculeEditorComponent(storeObject, unref(componentID), unref(componentPath));
-const componentData = component.getComponentData();
-const taskData = component.getTaskData();
-const currentTaskGraphNode = component.getCurrentTaskGraphNode();
-const dependencyPaths = component.getDependencyPaths();
 
 onBeforeMount(async () => {
   // load JSME
   // await component.loadJSME();
 });
-onMounted(() => {
+onMounted(async () => {
   // wait for JSME to be fully loaded, then instantiate it and render it
-  component.instantiateJSME(props);
+  await component.instantiateJSME(props);
   // wait for JSME instance to be fully instantiated, then set the callback handlers
   component.setJSMECallbackHandler();
 });
+
+// TODO: implement watcher to render when smiles changes
 </script>
 
 <style>
 .jsmeContainer {
   width: 100%;
   height: 100%;
-  margin-top: 30px;
 }
 </style>
