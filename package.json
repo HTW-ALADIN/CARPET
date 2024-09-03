@@ -44,7 +44,7 @@
     "vue": "^3.3.2",
     "vue-grid-layout": "github:plc-dev/vue-grid-layout#aladin",
     "vue-router": "^4.2.0",
-    "vuedraggable": "^2.24.3",
+    "vuedraggable": "^4.1.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {

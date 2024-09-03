@@ -165,6 +165,18 @@ const actions = {
   },
   setPropertyFromPath: async ({ commit }, payload: { path: string; value: any }) => {
     commit("SET_PROPERTY", payload);
+  },
+  /* Schnittstelle, für die Übertragung des erstellen Graphen an ALADIN */
+  fetchSolution: async ({}, payload: Object) => {
+    const result = await axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/decisiontree/decisionTreeValidator',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: JSON.stringify({ graph: payload, type: 'decisiontree', instruction: 'decisionTreeValidator' })
+    });
+    return result.data;
   }
 };
 const getters = {
