@@ -108,22 +108,30 @@ export abstract class TaskComponent<
 
   public loadDependencies() {
     const dependencies = computed(() => {
-      const dependencies: { [key: string]: any } = {};
-      for (const [dependencyName, dependencyPath] of Object.entries(unref(this.serializedTaskComponent).dependencies)) {
-        const dependencyExists = this.checkDependency(dependencyPath);
-        const dependencyValue = unref(dependencyExists) ? this.getComputedTaskGraphProperty(dependencyPath) : null;
-        // need to use Reflect.set, due to Typescript not being able to infer the type of a Generic type
-        // this leads to typescript infering the type of the dependencyValue as any
-        // https://github.com/microsoft/TypeScript/issues/47357#issuecomment-1364043084
-        // Reflect.set(dependencies, dependencyName, dependencyValue);
+      //   const dependencies: { [key: string]: any } = {};
+      //   for (const [dependencyName, dependencyPath] of Object.entries(unref(this.serializedTaskComponent).dependencies)) {
+      //     const dependencyExists = this.checkDependency(dependencyPath);
+      //     const dependencyValue = unref(dependencyExists) ? this.getComputedTaskGraphProperty(dependencyPath) : null;
+      //     // need to use Reflect.set, due to Typescript not being able to infer the type of a Generic type
+      //     // this leads to typescript infering the type of the dependencyValue as any
+      //     // https://github.com/microsoft/TypeScript/issues/47357#issuecomment-1364043084
+      //     // Reflect.set(dependencies, dependencyName, dependencyValue);
 
+      //     dependencies[dependencyName] = dependencyValue;
+      //   }
+      //   // alternatively cast to D, but this is not type safe
+      //   return <D>dependencies;
+      // });
+      const dependencies: { [key: string]: any } = {};
+
+      const dependencyPaths = this.getDependencyPaths();
+      for (const [dependencyName, dependencyPath] of Object.entries(unref(dependencyPaths))) {
+        const dependencyValue = unref(this.storeObject).getProperty(dependencyPath);
         dependencies[dependencyName] = dependencyValue;
       }
-      // alternatively cast to D, but this is not type safe
-      return <D>dependencies;
+      return dependencies;
     });
-
-    return dependencies;
+    return <ComputedRef<D>>dependencies;
   }
 
   public getComponentData(): Ref<CD> {

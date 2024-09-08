@@ -1,6 +1,5 @@
 <template>
   <div class="parameter_form">
-    <h2>{{ title }}</h2>
     <div class="parameter_form_columns">
       <div class="parameter_labels">
         <p

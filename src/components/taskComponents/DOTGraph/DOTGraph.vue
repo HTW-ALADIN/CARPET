@@ -4,11 +4,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, toRefs, unref, computed, onBeforeUnmount } from "vue";
+import { onMounted, watch, toRefs, unref } from "vue";
 import { DOTGraphComponent } from "@/components/taskComponents/DOTGraph/DOTGraph";
 import type { DOTGraphProps } from "@/components/taskComponents/DOTGraph/DOTGraph";
 import * as d3 from "d3";
-import { ensurePathExists } from "@/store/taskGraph";
 
 import { graphviz } from "d3-graphviz";
 
@@ -22,8 +21,7 @@ const { storeObject, componentID, componentPath, graphID } = reactiveProps;
 
 const component = new DOTGraphComponent(storeObject, unref(componentID), unref(componentPath));
 const componentData = component.getComponentData();
-const taskData = component.getTaskData();
-const dependencyPaths = component.getDependencyPaths();
+const dependencies = component.loadDependencies();
 
 const completeGraphID = unref(graphID)
   ? `graph_${unref(componentID)}_${unref(graphID)}`
@@ -65,33 +63,24 @@ const renderIfGraph = () => {
 };
 
 // TODO: check for better reactivity method to react to deeply nested states when swapping to Pinia
-// watch(
-//   unref(storeObject).store.state,
-//   () => {
-//     console.log("hello");
-//     renderIfGraph();
-//   },
-//   { deep: true }
+// const unsubscribe = unref(storeObject).store.subscribe(
+//   (action: { type: string; payload: { path: string } }, state: object) => {
+//     if (action.type === "SET_PROPERTY") {
+//       if (action.payload.path === dependencyPaths.dotDescription) {
+//         renderIfGraph();
+//       }
+//     }
+//   }
 // );
-const unsubscribe = unref(storeObject).store.subscribe(
-  (action: { type: string; payload: { path: string } }, state: object) => {
-    if (action.type === "SET_PROPERTY") {
-      if (action.payload.path === dependencyPaths.dotDescription) {
-        renderIfGraph();
-      }
-    }
-  }
-);
-onBeforeUnmount(() => {
-  unsubscribe();
-});
+// onBeforeUnmount(() => {
+//   unsubscribe();
+// });
 
 watch(
-  taskData,
+  () => dependencies.value.dotDescription,
   () => {
     renderIfGraph();
-  },
-  { deep: true }
+  }
 );
 
 onMounted(() => {
