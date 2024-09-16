@@ -1,12 +1,12 @@
 <template>
   <!-- element to render the DOTGraph in -->
-  <div class="dotGraph" :style="props.style ?? {}" :id="completeGraphID"></div>
+  <div class="dotGraph" :id="completeGraphID"></div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, watch, toRefs, unref } from "vue";
-import { DOTGraphComponent } from "@/components/taskComponents/DOTGraph/DOTGraph";
-import type { DOTGraphProps } from "@/components/taskComponents/DOTGraph/DOTGraph";
+import { DOTGraphComponent } from "@/components/DOTGraph/DOTGraph";
+import type { DOTGraphProps } from "@/components/DOTGraph/DOTGraph";
 import * as d3 from "d3";
 
 import { graphviz } from "d3-graphviz";

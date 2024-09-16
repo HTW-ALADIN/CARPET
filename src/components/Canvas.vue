@@ -18,7 +18,6 @@
         :vertical-compact="false"
         :use-css-transforms="true"
         :prevent-collision="true"
-        @breakpoint-changed="() => {}"
         :key="layoutSize"
         :transform-scale="zoomScale"
         :is-bounded="true"
@@ -65,69 +64,25 @@ import { onMounted, computed } from "vue";
 import { GridLayout, GridItem } from "grid-layout-plus";
 import panzoom from "@panzoom/panzoom";
 import { interjectionHandler } from "@/interjections/interjectionHandler";
-import { CONSTANTS } from "@/CARPET_config";
+import { CONSTANTS } from "@/CARPETConfig";
 
-import MiniMap from "@/components/MiniMap.vue";
 import Navigation from "@/components/Navigation.vue";
 import Hint from "@/components/Hint.vue";
 import TextArea from "@/components/TextArea.vue";
 import Modal from "@/components/Modal.vue";
 
-import Matrix from "@/components/taskComponents/math/LinearAlgebra/Matrix.vue";
 import DOTGraph from "@/components/taskComponents/DOTGraph/DOTGraph.vue";
-import DecisionTree from "@/components/taskComponents/DecisionTree/DecisionTree.vue";
-import TaskConfiguration from "@/components/taskComponents/TaskConfiguration.vue";
-import VisualGraphTraversal from "@/components/taskComponents/VisualGraphTraversal.vue";
-import PathDisplay from "@/components/taskComponents/PathDisplay.vue";
-import CodeEditor from "@/components/taskComponents/CodeEditor.vue";
-import Output from "@/components/taskComponents/Output.vue";
-import Dropdown from "@/components/taskComponents/Dropdown.vue";
-import ContourPlot from "@/components/taskComponents/ContourPlot.vue";
-import BackgroundGraph from "@/components/taskComponents/BackgroundGraph.vue";
-import Equation from "@/components/taskComponents/math/Equation/Equation.vue";
-import TexDisplay from "@/components/taskComponents/math/Equation/TexDisplay.vue";
-import DijkstraTable from "@/components/taskComponents/dijkstra/DijkstraTable.vue";
-import DijkstraGraph from "@/components/taskComponents/dijkstra/DijkstraGraph.vue";
-import PlanGraph from "@/components/taskComponents/scheduling/PlanGraph.vue";
-import EditableGraph from "@/components/taskComponents/EditableGraph.vue";
-import GanttDiagram from "@/components/taskComponents/scheduling/GanttDiagram.vue";
-import ManipulatableGraph from "@/components/taskComponents/ManipulatableGraph/ManipulatableGraph.vue";
-import ItemPallet from "@/components/taskComponents/DragDrop/ItemPallet/ItemPallet.vue";
-import InputForm from "@/components/taskComponents/InputForm.vue";
-import MoleculeEditor from "@/components/taskComponents/Chemistry/MoleculeEditor/MoleculeEditor.vue";
 
 export default {
   name: "Canvas",
   components: {
-    MoleculeEditor,
-    ItemPallet,
-    ManipulatableGraph,
-    BackgroundGraph,
-    ContourPlot,
-    MiniMap,
     Hint,
-    Matrix,
     DOTGraph,
-    DecisionTree,
-    TaskConfiguration,
     GridItem,
     GridLayout,
     Navigation,
-    VisualGraphTraversal,
-    CodeEditor,
-    Output,
-    Dropdown,
-    PathDisplay,
-    Equation,
-    TexDisplay,
-    DijkstraTable,
-    DijkstraGraph,
     TextArea,
-    Modal,
-    PlanGraph,
-    EditableGraph,
-    GanttDiagram,
-    InputForm
+    Modal
   },
   props: {
     storeObject: Object

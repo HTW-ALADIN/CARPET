@@ -5,8 +5,8 @@ import type {
   TaskGraphPath,
   ComponentProps,
   ComponentData
-} from "@/components/taskComponents/TaskComponent";
-import { TaskComponent } from "@/components/taskComponents/TaskComponent";
+} from "@/components/TaskComponent";
+import { TaskComponent } from "@/components/TaskComponent";
 import type { ComputedRef } from "vue";
 import { unref } from "vue";
 

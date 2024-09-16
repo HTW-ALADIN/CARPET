@@ -1,8 +1,9 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "public/js/mathlex.js"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    "strict": true,
     "types": ["node"],
     "composite": true,
     "baseUrl": ".",
@@ -10,6 +11,6 @@
       "@/*": ["./src/*"]
     },
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": false
   }
 }
